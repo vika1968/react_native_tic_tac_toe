@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
+type Player = 'X' | 'O';
+
 const TicTacToe = () => {
-  const [player, setPlayer] = useState<string>('X');
+  const [player, setPlayer] = useState<Player>('X');
   const [gameover, setGameover] = useState<boolean>(false);
   const [gameBoard, setGameBoard] = useState<string[]>(Array(9).fill(''));
   const [winningLine, setWinningLine] = useState<number[]>([]);
 
-  const changePlayer = (): string => {
+  const changePlayer = (): Player => {
     return player === 'X' ? 'O' : 'X';
   };
 
-  const getWinner = (): string | null => {
+  const getWinner = (): Player | null => {
     const wins: number[][] = [
       [0, 1, 2],
       [3, 4, 5],
@@ -31,7 +33,7 @@ const TicTacToe = () => {
         gameBoard[a] !== ''
       ) {
         setWinningLine([a, b, c]);
-        return gameBoard[a];
+        return gameBoard[a] as Player;
       }
     }
 
@@ -45,11 +47,11 @@ const TicTacToe = () => {
       setGameBoard(updatedGameBoard);
       setPlayer(changePlayer());
 
-      const winner: string | null = getWinner();
+      const winner: Player | null = getWinner();
       if (winner) {
         setGameover(true);
         alert(`Player ${winner} won! If you want to start a new game, press the "New game" button.`);
-        setPlayer(winner)
+        setPlayer(winner);
       }
     }
   };
@@ -62,7 +64,7 @@ const TicTacToe = () => {
   };
 
   return (
-    <View style={styles.container}>  
+    <View style={styles.container}>
       <View style={styles.gameContainer}>
         {gameBoard.map((cell, index) => (
           <TouchableOpacity
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 60,
   },
   winnerCell: {
-    backgroundColor: '#e88b9a', 
+    backgroundColor: '#e88b9a',
     borderColor: 'red',
   },
   gameInfo: {
@@ -129,11 +131,10 @@ const styles = StyleSheet.create({
   resetButton: {
     marginTop: 10,
     paddingVertical: 5,
-    padding: 30,   
-    backgroundColor: '#e88b9a', 
-    borderColor: 'red',
-    borderRadius: 16,
-    color: 'white',
+    padding: 30,
+    backgroundColor: '#e88b9a',
+    borderColor: 'red' 
+   
   },
   resetButtonText: {
     fontSize: 15,
