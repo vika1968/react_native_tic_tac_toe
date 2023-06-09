@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 type Player = 'X' | 'O';
 
@@ -40,19 +40,23 @@ const TicTacToe = () => {
     return null;
   };
 
+  useEffect(() => {
+    const winner: Player | null = getWinner();
+    if (winner) {
+      setGameover(true);
+      Alert.alert(
+        `Player ${winner} won!`,
+        'If you want to start a new game, press the "New game" button.'
+      );
+    }
+  }, [gameBoard]);
+
   const handleCellPress = (index: number) => {
     if (gameBoard[index] === '' && !gameover) {
       const updatedGameBoard: string[] = [...gameBoard];
       updatedGameBoard[index] = player;
       setGameBoard(updatedGameBoard);
       setPlayer(changePlayer());
-
-      const winner: Player | null = getWinner();
-      if (winner) {
-        setGameover(true);
-        alert(`Player ${winner} won! If you want to start a new game, press the "New game" button.`);
-        setPlayer(winner);
-      }
     }
   };
 
@@ -66,19 +70,51 @@ const TicTacToe = () => {
   return (
     <View style={styles.container}>
       <View style={styles.gameContainer}>
-        {gameBoard.map((cell, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.cell,
-              winningLine.includes(index) && styles.winnerCell,
-            ]}
-            onPress={() => handleCellPress(index)}
-            disabled={gameover}
-          >
-            <Text style={styles.cellText}>{cell}</Text>
-          </TouchableOpacity>
-        ))}
+        <View style={styles.row}>
+          {gameBoard.slice(0, 3).map((cell, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.cell,
+                winningLine.includes(index) && styles.winnerCell,
+              ]}
+              onPress={() => handleCellPress(index)}
+              disabled={gameover || cell !== ''}
+            >
+              <Text style={styles.cellText}>{cell}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.row}>
+          {gameBoard.slice(3, 6).map((cell, index) => (
+            <TouchableOpacity
+              key={index + 3}
+              style={[
+                styles.cell,
+                winningLine.includes(index + 3) && styles.winnerCell,
+              ]}
+              onPress={() => handleCellPress(index + 3)}
+              disabled={gameover || cell !== ''}
+            >
+              <Text style={styles.cellText}>{cell}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.row}>
+          {gameBoard.slice(6, 9).map((cell, index) => (
+            <TouchableOpacity
+              key={index + 6}
+              style={[
+                styles.cell,
+                winningLine.includes(index + 6) && styles.winnerCell,
+              ]}
+              onPress={() => handleCellPress(index + 6)}
+              disabled={gameover || cell !== ''}
+            >
+              <Text style={styles.cellText}>{cell}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
       <View style={styles.gameInfo}>
         <Text style={styles.info}>Turn for {player}</Text>
@@ -90,55 +126,61 @@ const TicTacToe = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 50,
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   gameContainer: {
+    marginTop: 20,
+  },
+  row: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
-    marginTop: 50,
   },
   cell: {
-    width: 90,
-    height: 90,
-    backgroundColor: '#f3e7f9',
-    borderWidth: 1,
-    borderColor: '#333333',
+    width: 100,
+    height: 100,
+    backgroundColor: '#e0e0e0',
+    borderWidth: 2,
+    borderColor: '#bdbdbd',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 3,
+    margin: 5,
   },
   cellText: {
-    fontSize: 60,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#424242',
   },
   winnerCell: {
-    backgroundColor: '#e88b9a',
-    borderColor: 'red',
+    backgroundColor: '#aed581',
+    borderColor: '#81c784',
   },
   gameInfo: {
     marginTop: 20,
     alignItems: 'center',
   },
   info: {
-    color: '#341255',
-    fontStyle: 'italic',
-    fontSize: 20,
+    color: '#424242',
+    fontSize: 24,
+    marginBottom: 10,
   },
   resetButton: {
     marginTop: 10,
-    paddingVertical: 5,
-    padding: 30,
-    backgroundColor: '#e88b9a',
-    borderColor: 'red' 
-   
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#f06292',
+    borderRadius: 5,
   },
   resetButtonText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#fff',
   },
 });
 
