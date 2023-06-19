@@ -14,11 +14,11 @@ function HomeScreen() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: "search" | "link" | "image" | "calendar" | "star" | "chart" = "star"; // Default icon name
+          let iconName: "search" | "link" | "image" | "calendar" | "star" | "chart" = "star"; 
           if (route.name === "Calculator") {
-            iconName = focused ? "calendar" : "star"; // Calculator icon
+            iconName = focused ? "calendar" : "star"; 
           } else if (route.name === "TicTacToe") {
-            iconName = focused ? "chart" : "star"; // TicTacToe icon
+            iconName = focused ? "chart" : "star"; 
           }
           return <EvilIcons name={iconName} size={size} color={color} />;
         },
